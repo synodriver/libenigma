@@ -1,7 +1,7 @@
 #include "enigma.h"
 
 
-uint8_t
+static uint8_t
 _enigma_findindex(const uint8_t *map, uint8_t c)
 {
     for (int i = 0; i < 256; i++)
@@ -80,7 +80,7 @@ enigma_machine_del(enigma_machine_t *self)
 }
 
 // roller idx start from 0
-void
+static void
 _enigma_machine_roll_once(enigma_machine_t *self, size_t idx)
 {
     uint8_t *ptr_forward = self->forward_maps + idx * 256;
@@ -105,7 +105,7 @@ enigma_machine_roll(enigma_machine_t *self, size_t idx, int count)
     }
 }
 
-void
+static void
 _enigma_machine_inc(enigma_machine_t *self)
 {
     self->encode_count++;
@@ -121,7 +121,7 @@ _enigma_machine_inc(enigma_machine_t *self)
 }
 
 
-uint8_t
+static uint8_t
 _enigma_machine_encode_one(enigma_machine_t *self, uint8_t code)
 {
     uint8_t replaced = self->replace_func(self->replace_ud, code);
@@ -134,6 +134,7 @@ _enigma_machine_encode_one(enigma_machine_t *self, uint8_t code)
     {
         replaced += *(self->reverse_maps + (i - 1) * 256 + replaced);
     }
+    replaced = self->replace_func(self->replace_ud, replaced);
     _enigma_machine_inc(self);
     return replaced;
 }
