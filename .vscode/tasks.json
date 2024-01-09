@@ -1,0 +1,17 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "c++ compile",
+            "type": "shell",
+            "command": "g++ ${file} -Wall -Wextra -Wpedantic -fsanitize=undefined -D LOCAL -std=gnu++17 -O2 -D_GLIBCXX_ASSERTIONS -o ${fileDirname}/${fileBasenameNoExtension}",
+            "problemMatcher": []
+        },
+        {
+            "label": "run",
+            "type": "shell",
+            "command": "${fileDirname}/${fileBasenameNoExtension}",
+            "problemMatcher": []
+        },
+    ]
+}

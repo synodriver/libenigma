@@ -1,0 +1,34 @@
+{
+  "env": {
+    "myDefaultIncludePath": [
+      "${workspaceFolder}"
+    ],
+    "myCompilerPath": "/usr/local/bin/gcc-7"
+  },
+  "configurations": [
+    {
+      "name": "linux-gcc-x64",
+      "intelliSenseMode": "linux-gcc-x64",
+      "includePath": [
+        "${workspaceFolder}/**"
+      ],
+      "compilerPath": "/bin/gcc",
+      "cStandard": "${default}",
+      "cppStandard": "gnu++17",
+      "browse": {
+        "path": [
+          "${workspaceFolder}"
+        ],
+        "limitSymbolsToIncludedHeaders": true,
+        "databaseFilename": ""
+      },
+      "compilerArgs": [
+        "-fsanitize=undefined",
+        "-fsanitize=address",
+        "-D_GLIBCXX_ASSERTIONS"
+      ],
+      "configurationProvider": "ms-vscode.makefile-tools"
+    }
+  ],
+  "version": 4
+}

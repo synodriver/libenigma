@@ -2,7 +2,7 @@
 
 void _get_inverse_map(const replace_map map, replace_map target) {
     for (int i = 0; i < 256; i++)
-        target[map[i]] = i;
+        target[map[i]] = (uint8_t)i;
 }
 
 void swap(uint8_t* a, uint8_t* b) {
@@ -19,22 +19,17 @@ void _random_shuffle(replace_map map) {
 enigma_machine_t*
 enigma_machine_new(size_t rollers_count) {
     enigma_machine_t* self = ENIGMA_MALLOC(sizeof(enigma_machine_t));
+    self->rollers_count = rollers_count;
     self->forward_maps = malloc(sizeof(replace_map) * rollers_count);
     self->reverse_maps = malloc(sizeof(replace_map) * rollers_count);
     self->roll_count = malloc(sizeof(uint8_t) * rollers_count);
     self->reflect_key = rand() % 256;
-    memset(self->roll_count, rollers_count, 0);
+    memset(self->roll_count, 0, rollers_count);
     for (int i = 0; i < rollers_count; i++) {
         for (int j = 0; j < 256; j++)
-            self->forward_maps[i][j] = j;
+            self->forward_maps[i][j] = (uint8_t)j;
         _random_shuffle(self->forward_maps[i]);
-        for (int j = 0; j < 256; j++)
-            printf("%d ", self->forward_maps[i][j]);
-        puts("\n\n");
         _get_inverse_map(self->forward_maps[i], self->reverse_maps[i]);
-        for (int j = 0; j < 256; j++)
-            printf("%d ", self->reverse_maps[i][j]);
-        puts("\n\n\n");
     }
     return self;
 }
@@ -60,10 +55,10 @@ void _enigma_machine_roll_one(enigma_machine_t* self, size_t idx) {
 
 uint8_t _enigma_machine_get_replaced_byte(enigma_machine_t* self, uint8_t byte) {
     for (int i = 0; i < self->rollers_count; i++)
-        byte = self->forward_maps[i][byte - self->roll_count[i]];
+        byte = self->forward_maps[i][(uint8_t)(byte - self->roll_count[i])];
     byte ^= self->reflect_key;
     for (int i = self->rollers_count - 1; i >= 0; i--)
-        byte = self->reverse_maps[i][byte] + self->roll_count[i];
+        byte = (uint8_t)(self->reverse_maps[i][byte] + self->roll_count[i]);
     return byte;
 }
 
@@ -112,4 +107,19 @@ void enigma_machine_encode_inplace(enigma_machine_t* self, uint8_t* data, size_t
 //         }
 //     }
 //     return true;
+// }
+
+// uint8_t input[] = {114, 145, 114, 145, 191, 191, 180, 180};
+
+// int main() {
+//     enigma_machine_t* eni = enigma_machine_new(3);
+//     // eni->reflect_key = 0;
+//     for (int i = 0; i < 2; i++) {
+//         memset(eni->roll_count, 0, 3);
+//         enigma_machine_encode_inplace(eni, input, 8);
+//         for (int i = 0; i < 8; i++)
+//             printf("%d ", input[i]);
+//         putchar('\n');
+//     }
+//     return 0;
 // }
