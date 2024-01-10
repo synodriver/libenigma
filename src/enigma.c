@@ -24,38 +24,32 @@ enigma_machine_new(const uint8_t *maps, size_t mapsize,
 {
     if (maps == NULL || reflect_func == NULL || replace_func == NULL)
     {
-        return NULL;
+        goto fail;
     }
     if (mapsize % 256 != 0)
     {
-        return NULL;
+        goto fail;
     }
     enigma_machine_t *self = ENIGMA_MALLOC(sizeof(enigma_machine_t));
     if (self == NULL)
     {
-        return NULL;
+        goto fail;
     }
     self->forward_maps = ENIGMA_MALLOC(mapsize);
     if (self->forward_maps == NULL)
     {
-        ENIGMA_FREE(self);
-        return NULL;
+        goto fail1;
     }
     self->reverse_maps = ENIGMA_MALLOC(mapsize);
     if (self->reverse_maps == NULL)
     {
-        ENIGMA_FREE(self->forward_maps);
-        ENIGMA_FREE(self);
-        return NULL;
+        goto fail2;
     }
     self->rollers = mapsize / 256;
     self->offset = ENIGMA_MALLOC(sizeof(uint8_t)*self->rollers);
     if(self->offset==NULL)
     {
-        ENIGMA_FREE(self->reverse_maps);
-        ENIGMA_FREE(self->forward_maps);
-        ENIGMA_FREE(self);
-        return NULL;
+        goto fail3;
     }
     memset(self->offset, 0, self->rollers);
     self->reflect_func = reflect_func;
@@ -73,6 +67,16 @@ enigma_machine_new(const uint8_t *maps, size_t mapsize,
         }
     }
     return self;
+
+fail3:
+    ENIGMA_FREE(self->reverse_maps);
+fail2:
+    ENIGMA_FREE(self->forward_maps);
+fail1:
+    ENIGMA_FREE(self);
+fail:
+    return NULL;
+
 }
 
 void

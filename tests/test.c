@@ -67,7 +67,16 @@ int main(int argc, char **argv)
     enigma_machine_encode_inplace(newmachine, buf+10, 264);
     enigma_machine_del(newmachine);
     newmachine=NULL;
+    FILE* out = fopen("encrypted.bin","wb");
+    if (out==NULL)
+    {
+        fprintf(stderr, "can not open output file\n");
+        return 1;
+    }
+    fwrite(buf, 1, 274, out);
     fwrite(buf, 1, 274, stderr);
+    fclose(out);
+
     fprintf(stderr, "\n");
     /* decode */
     enigma_machine_t *decoder = enigma_machine_new(map, 512, reflect, NULL, replace, NULL);

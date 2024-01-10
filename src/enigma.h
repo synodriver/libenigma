@@ -9,7 +9,7 @@
 #include <limits.h>
 
 #ifdef ENIGMA_EXTRA_HEADER
-#include "ENIGMA_EXTRA_HEADER"
+#include ENIGMA_EXTRA_HEADER
 #endif
 
 #ifndef ENIGMA_MALLOC
