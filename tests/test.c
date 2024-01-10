@@ -57,9 +57,16 @@ int main(int argc, char **argv)
     assert(enigma_machine_test_reflect(machine));
     enigma_machine_roll(machine, 0, 10); // 把第0个滚轮转到10
     enigma_machine_roll(machine, 1, 20); // 把第1个滚轮转到20
-    enigma_machine_encode_inplace(machine, buf, 274); // 加密
+    enigma_machine_encode_inplace(machine, buf, 10); // 加密  274
+    enigma_machine_t *newmachine = enigma_machine_dup(machine);
     enigma_machine_del(machine);
     machine = NULL;
+    assert(newmachine->rollers == 2);
+    assert(enigma_machine_test_replace(newmachine));
+    assert(enigma_machine_test_reflect(newmachine));
+    enigma_machine_encode_inplace(newmachine, buf+10, 264);
+    enigma_machine_del(newmachine);
+    newmachine=NULL;
     fwrite(buf, 1, 274, stderr);
     fprintf(stderr, "\n");
     /* decode */

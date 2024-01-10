@@ -31,6 +31,7 @@ typedef struct enigma_machine_s
 {
     size_t encode_count;
     size_t rollers;
+    uint8_t *offset; // roller offset len=rollers
     uint8_t *forward_maps; // rollers*256
     uint8_t *reverse_maps; // rollers*256
     uint8_t (*reflect_func)(void *, uint8_t);
@@ -64,6 +65,9 @@ enigma_machine_encode_into(enigma_machine_t *self, const uint8_t *data, size_t l
 
 DLLEXPORT void
 enigma_machine_encode_inplace(enigma_machine_t *self, uint8_t *data, size_t len);
+
+DLLEXPORT enigma_machine_t *
+enigma_machine_dup(enigma_machine_t *self);
 
 DLLEXPORT bool
 enigma_machine_test_replace(enigma_machine_t *self);
