@@ -75,4 +75,10 @@ enigma_machine_test_replace(enigma_machine_t *self);
 DLLEXPORT bool
 enigma_machine_test_reflect(enigma_machine_t *self);
 
+DLLEXPORT void
+enigma_machine_dump_replace_table(enigma_machine_t *self, uint8_t *out /*256 bytes*/);
+
+DLLEXPORT void
+enigma_machine_dump_reflect_table(enigma_machine_t *self, uint8_t *out /*256 bytes*/);
+
 #endif //ENIGMA_ENIGMA_H

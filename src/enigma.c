@@ -168,30 +168,24 @@ enigma_machine_dup(enigma_machine_t *self)
     enigma_machine_t *new = ENIGMA_MALLOC(sizeof(enigma_machine_t));
     if (new == NULL)
     {
-        return NULL;
+        goto fail;
     }
     size_t mapsize = self->rollers * 256;
     new->forward_maps = ENIGMA_MALLOC(mapsize);
     if (new->forward_maps == NULL)
     {
-        ENIGMA_FREE(new);
-        return NULL;
+        goto fail1;
     }
     new->reverse_maps = ENIGMA_MALLOC(mapsize);
     if (new->reverse_maps == NULL)
     {
-        ENIGMA_FREE(new->forward_maps);
-        ENIGMA_FREE(new);
-        return NULL;
+        goto fail2;
     }
     new->rollers =self->rollers;
     new->offset = ENIGMA_MALLOC(sizeof(uint8_t)*new->rollers);
     if(new->offset==NULL)
     {
-        ENIGMA_FREE(new->reverse_maps);
-        ENIGMA_FREE(new->forward_maps);
-        ENIGMA_FREE(new);
-        return NULL;
+        goto fail3;
     }
     memcpy(new->forward_maps, self->forward_maps, mapsize);
     memcpy(new->reverse_maps, self->reverse_maps, mapsize);
@@ -204,6 +198,15 @@ enigma_machine_dup(enigma_machine_t *self)
     new->reflect_ud  = self->reflect_ud;
 
     return new;
+
+fail3:
+    ENIGMA_FREE(new->reverse_maps);
+fail2:
+    ENIGMA_FREE(new->forward_maps);
+fail1:
+    ENIGMA_FREE(new);
+fail:
+    return NULL;
 }
 
 bool
@@ -238,4 +241,24 @@ enigma_machine_test_reflect(enigma_machine_t *self)
         }
     }
     return true;
+}
+
+void
+enigma_machine_dump_replace_table(enigma_machine_t *self, uint8_t *out)
+{
+    for (int i = 0; i < 256; i++)
+    {
+        out[i] = self->replace_func(self->replace_ud, (uint8_t)i);
+    }
+
+}
+
+void
+enigma_machine_dump_reflect_table(enigma_machine_t *self, uint8_t *out)
+{
+    for (int i = 0; i < 256; i++)
+    {
+        out[i] = self->reflect_func(self->reflect_ud, (uint8_t)i);
+    }
+
 }

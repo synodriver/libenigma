@@ -85,6 +85,16 @@ int main(int argc, char **argv)
     enigma_machine_encode_inplace(decoder, buf, 274);
     fwrite(buf, 1, 274, stderr);
     assert(strncmp(buf, a, 274) == 0);
+
+    uint8_t reflect_table[256];
+    enigma_machine_dump_reflect_table(decoder, reflect_table);
+    fprintf(stderr, "\nreflect_table is \n");
+    fwrite(reflect_table, 1, 256, stderr);
+    fprintf(stderr, "\n");
+    enigma_machine_dump_replace_table(decoder, reflect_table);
+    fprintf(stderr, "replace_table is \n");
+    fwrite(reflect_table, 1, 256, stderr);
+    fprintf(stderr, "\n");
     enigma_machine_del(decoder);
     return 0;
 }
